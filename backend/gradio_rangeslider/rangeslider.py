@@ -21,7 +21,7 @@ class RangeSlider(FormComponent):
     A slider component that allows the user to select a range of values.
     """
 
-    EVENTS = [Events.change, Events.input]
+    EVENTS = [Events.change, Events.input, Events.release]
     data_model = RangeSliderData
 
     def __init__(

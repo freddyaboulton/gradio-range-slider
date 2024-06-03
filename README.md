@@ -10,9 +10,9 @@ app_file: app.py
 ---
 
 # `gradio_rangeslider`
-<img alt="Static Badge" src="https://img.shields.io/badge/version%20-%200.0.1%20-%20orange">  
+<a href="https://pypi.org/project/gradio_rangeslider/" target="_blank"><img alt="PyPI - Version" src="https://img.shields.io/pypi/v/gradio_rangeslider"></a>  
 
-🛝 Slider component for selecting a range of values.
+🛝 Slider component for selecting a range of values
 
 ## Installation
 
@@ -21,8 +21,6 @@ pip install gradio_rangeslider
 ```
 
 ## Usage
-
-The `RangeSlider` functions similarly to the core Gradio `Slider` except that it shows two draggable thumbtracks. The `value` of the component is a tuple of the two endpoints of the range.
 
 ```python
 
@@ -38,8 +36,7 @@ with gr.Blocks() as demo:
     range_slider = RangeSlider(minimum=0, maximum=100, value=(0, 100))
     range_ = gr.Markdown(value=text.format(min=0, max=100))
     range_slider.change(lambda s: text.format(min=s[0], max=s[1]), range_slider, range_,
-                        show_progress="hide")
-
+                        show_progress="hide", trigger_mode="always_last")
 
 
 if __name__ == "__main__":
@@ -277,6 +274,7 @@ bool
 |:-----|:------------|
 | `change` | Triggered when the value of the RangeSlider changes either because of user input (e.g. a user types in a textbox) OR because of a function update (e.g. an image receives a value from the output of an event trigger). See `.input()` for a listener that is only triggered by user input. |
 | `input` | This listener is triggered when the user changes the value of the RangeSlider. |
+| `release` | This listener is triggered when the user releases the mouse on this RangeSlider. |
 
 
 

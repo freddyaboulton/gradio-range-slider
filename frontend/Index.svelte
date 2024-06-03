@@ -7,12 +7,12 @@
 	import { Block, BlockTitle } from "@gradio/atoms";
 	import { StatusTracker } from "@gradio/statustracker";
 	import type { LoadingStatus } from "@gradio/statustracker";
-	import { afterUpdate } from "svelte";
 
 	export let gradio: Gradio<{
 		change: number[];
 		input: number[];
 		clear_status: LoadingStatus;
+    release: number[];
 	}>;
 	export let elem_id = "";
 	export let elem_classes: string[] = [];
@@ -53,6 +53,10 @@
       }
     }
 
+    function handle_release(e: MouseEvent): void {
+		  gradio.dispatch("release", value);
+	}
+
 	let old_value = value;
 	let [selected_min, selected_max] = value;
 
@@ -89,15 +93,17 @@
 				  min={minimum}
 				  max={maximum}
 				  disabled={!interactive}
+          on:pointerup={handle_release}
 			  />
 			  <input
-				aria-label={`min input for ${label}`}
-				data-testid="min-input"
-				type="number"
-				bind:value={selected_min}
-				min={minimum}
-				max={maximum}
-				disabled={!interactive}
+          aria-label={`min input for ${label}`}
+          data-testid="min-input"
+          type="number"
+          bind:value={selected_min}
+          min={minimum}
+          max={maximum}
+          disabled={!interactive}
+          on:pointerup={handle_release}
 			  />
 			</div>
 		</div>
@@ -105,8 +111,8 @@
 	  <div class="range-slider">
 		<div class="range-bg"></div>
 		<div class="range-line" style={rangeLine}></div>
-		<input type="range" disabled={!interactive} min={minimum} max={maximum} {step} bind:value={selected_min} on:input={handle_min_change} />
-		<input type="range" disabled={!interactive} min={minimum} max={maximum} {step} bind:value={selected_max} on:input={handle_max_change} />
+		<input type="range" disabled={!interactive} min={minimum} max={maximum} {step} bind:value={selected_min} on:input={handle_min_change} on:pointerup={handle_release} />
+		<input type="range" disabled={!interactive} min={minimum} max={maximum} {step} bind:value={selected_max} on:input={handle_max_change} on:pointerup={handle_release} />
 	  </div>
 </Block>
 
