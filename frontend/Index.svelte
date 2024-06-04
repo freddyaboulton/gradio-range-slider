@@ -32,11 +32,12 @@
 	export let value_is_output = false;
 
     function handle_change(selected_min, selected_max): void {
-	  value = [selected_min, selected_max];
+	    value = [selected_min, selected_max];
       gradio.dispatch("change", [selected_min, selected_max]);
-	  if (!value_is_output) {
-		gradio.dispatch("input", [selected_min, selected_max])
-	  }
+	  
+      if (!value_is_output) {
+		    gradio.dispatch("input", [selected_min, selected_max])
+	    }
     }
   
     function handle_min_change(event) {
@@ -61,8 +62,8 @@
 	let [selected_min, selected_max] = value;
 
 	$: if (JSON.stringify(old_value) !== JSON.stringify(value)) {
-		[selected_min, selected_max] = value;
-		old_value = value;
+		  [selected_min, selected_max] = value;
+		  old_value = value;
 	}
 
     $: handle_change(selected_min, selected_max);

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import math
-import random
+from collections.abc import Sequence
 from typing import Any, Callable, Tuple
 
 
@@ -101,7 +101,11 @@ class RangeSlider(FormComponent):
         Returns:
             The value of the slider within the range.
         """
-        return [self.minimum, self.maximum] if value is None else RangeSliderData(root=value)
+        if value is None:
+            return RangeSliderData(root=(self.minimum, self.maximum))
+        if not isinstance(value, Sequence) and len(value) != 2:
+            raise ValueError("Value must be a tuple of two numbers")
+        return RangeSliderData(root=(max(self.minimum, min(value[0], self.maximum)), max(self.minimum, min(value[1], self.maximum))))
 
     def preprocess(self, payload: RangeSliderData) -> Tuple[float, float]:
         """
