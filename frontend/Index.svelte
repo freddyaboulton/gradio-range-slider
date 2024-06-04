@@ -110,10 +110,10 @@
 		</div>
 	  </div>
 	  <div class="range-slider">
-		<div class="range-bg"></div>
-		<div class="range-line" style={rangeLine}></div>
-		<input type="range" disabled={!interactive} min={minimum} max={maximum} {step} bind:value={selected_min} on:input={handle_min_change} on:pointerup={handle_release} />
-		<input type="range" disabled={!interactive} min={minimum} max={maximum} {step} bind:value={selected_max} on:input={handle_max_change} on:pointerup={handle_release} />
+      <div class="range-bg"></div>
+      <div class="range-line" style={rangeLine} class:disabled={!interactive}></div>
+      <input type="range" disabled={!interactive} min={minimum} max={maximum} {step} bind:value={selected_min} on:input={handle_min_change} on:pointerup={handle_release} />
+      <input type="range" disabled={!interactive} min={minimum} max={maximum} {step} bind:value={selected_max} on:input={handle_max_change} on:pointerup={handle_release} />
 	  </div>
 </Block>
 
@@ -178,13 +178,13 @@
       pointer-events: auto;
       cursor: pointer;
     }
-  
+    /* Uncomment to make slider look the same on firefox */
     .range-slider input[type="range"]::-moz-range-thumb {
-      width: 20px;
+      /* width: 20px;
       height: 20px;
       background: white;
       border-radius: 50%;
-      border: solid 0.5px #ddd;
+      border: solid 0.5px #ddd; */
       pointer-events: auto;
       cursor: pointer;
     }
@@ -208,8 +208,24 @@
       background: var(--neutral-200);
       pointer-events: none;
     }
-  
-  </style>
+
+    .disabled {
+		  background-color: var(--body-text-color-subdued);
+	  }
+
+    input[type="range"][disabled]::-webkit-slider-thumb {
+		  cursor: not-allowed;
+		  background-color: var(--body-text-color-subdued);
+	  }
+
+    input[type="range"][disabled]::-moz-range-thumb {
+      background-color: var(--body-text-color-subdued);
+    }
+
+    input[type="number"][disabled] {
+      cursor: not-allowed;
+    }
+</style>
 
 
 
