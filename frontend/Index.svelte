@@ -41,14 +41,14 @@
     }
   
     function handle_min_change(event) {
-      selected_min = parseInt(event.target.value);
+      selected_min = parseFloat(event.target.value);
       if (selected_min > selected_max) {
         selected_max = selected_min;
       }
     }
   
     function handle_max_change(event) {
-      selected_max = parseInt(event.target.value);
+      selected_max = parseFloat(event.target.value);
       if (selected_max < selected_min) {
         selected_min = selected_max;
       }
