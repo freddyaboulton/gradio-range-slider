@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import math
 from collections.abc import Sequence
-from typing import Any, Callable, Tuple
+from typing import Any, Callable, Tuple, Union
 
 
 from gradio.components.base import FormComponent
@@ -13,7 +13,7 @@ from gradio.events import Events
 from gradio.data_classes import GradioRootModel
 
 class RangeSliderData(GradioRootModel):
-    root: Tuple[float, float]
+    root: Tuple[Union[float, None], Union[float, None]]
 
 
 class RangeSlider(FormComponent):

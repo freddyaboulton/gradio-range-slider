@@ -95,6 +95,7 @@
 				  max={maximum}
 				  disabled={!interactive}
           on:pointerup={handle_release}
+          on:blur={handle_release}
 			  />
 			  <input
           aria-label={`min input for ${label}`}
@@ -105,6 +106,7 @@
           max={maximum}
           disabled={!interactive}
           on:pointerup={handle_release}
+          on:blur={handle_release}
 			  />
 			</div>
 		</div>
