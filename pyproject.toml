@@ -37,9 +37,9 @@ classifiers = [
 # This will make it easy for people to find your deployed demo or source code when they
 # encounter your project in the wild.
 
-# [project.urls]
-# repository = "your github repository"
-# space = "your space url"
+[project.urls]
+repository = "https://github.com/freddyaboulton/gradio-range-slider"
+space = "https://huggingface.co/spaces/freddyaboulton/gradio_rangeslider"
 
 [project.optional-dependencies]
 dev = ["build", "twine"]

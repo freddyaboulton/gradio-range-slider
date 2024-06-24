@@ -10,7 +10,7 @@ app_file: app.py
 ---
 
 # `gradio_rangeslider`
-<a href="https://pypi.org/project/gradio_rangeslider/" target="_blank"><img alt="PyPI - Version" src="https://img.shields.io/pypi/v/gradio_rangeslider"></a>  
+<a href="https://pypi.org/project/gradio_rangeslider/" target="_blank"><img alt="PyPI - Version" src="https://img.shields.io/pypi/v/gradio_rangeslider"></a> <a href="https://github.com/freddyaboulton/gradio-range-slider/issues" target="_blank"><img alt="Static Badge" src="https://img.shields.io/badge/Issues-white?logo=github&logoColor=black"></a> <a href="https://huggingface.co/spaces/freddyaboulton/gradio_rangeslider/discussions" target="_blank"><img alt="Static Badge" src="https://img.shields.io/badge/%F0%9F%A4%97%20Discuss-%23097EFF?style=flat&logoColor=black"></a>
 
 🛝 Slider component for selecting a range of values
 
@@ -26,17 +26,26 @@ pip install gradio_rangeslider
 
 import gradio as gr
 from gradio_rangeslider import RangeSlider
+from pathlib import Path
 
 text = "## The range is: {min} to {max}"
 
+docs = Path(__file__).parent / "docs.md"
+
 with gr.Blocks() as demo:
-    gr.Markdown("""## 🛝 RangeSlider
-    Drag either end and see the selected endpoints update in real-time.
-    """) 
-    range_slider = RangeSlider(minimum=0, maximum=100, value=(0, 100))
-    range_ = gr.Markdown(value=text.format(min=0, max=100))
-    range_slider.change(lambda s: text.format(min=s[0], max=s[1]), range_slider, range_,
-                        show_progress="hide", trigger_mode="always_last")
+    with gr.Tabs():
+        with gr.Tab("Demo"):
+            gr.Markdown("""## 🛝 RangeSlider
+
+            ## Drag either end and see the selected endpoints update in real-time.
+            """) 
+            range_slider = RangeSlider(minimum=0, maximum=100, value=(0, 100))
+            range_ = gr.Markdown(value=text.format(min=0, max=100))
+            range_slider.change(lambda s: text.format(min=s[0], max=s[1]), range_slider, range_,
+                                show_progress="hide", trigger_mode="always_last")
+            gr.Examples([(20, 30), (40, 80)], inputs=[range_slider])
+        with gr.Tab("Docs"):
+            gr.Markdown(docs.read_text())
 
 
 if __name__ == "__main__":
