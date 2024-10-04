@@ -43,6 +43,7 @@ with gr.Blocks() as demo:
             range_ = gr.Markdown(value=text.format(min=0, max=100))
             range_slider.change(lambda s: text.format(min=s[0], max=s[1]), range_slider, range_,
                                 show_progress="hide", trigger_mode="always_last")
+            gr.Slider(label="Normal slider", minimum=0, maximum=100, value=50, interactive=True)
             gr.Examples([(20, 30), (40, 80)], inputs=[range_slider])
         with gr.Tab("Docs"):
             gr.Markdown(docs.read_text())
@@ -98,7 +99,9 @@ float
 <td align="left" style="width: 25%;">
 
 ```python
-tuple[float, float] | Callable | None
+typing.Union[
+    typing.Tuple[float, float], typing.Callable, NoneType
+][typing.Tuple[float, float][float, float], Callable, None]
 ```
 
 </td>
@@ -301,8 +304,10 @@ The code snippet below is accurate in cases where the component is used as both 
 
  ```python
  def predict(
-     value: tuple[float, float]
- ) -> tuple[float, float] | None:
+     value: typing.Tuple[float, float][float, float]
+ ) -> typing.Optional[typing.Tuple[float, float]][
+    typing.Tuple[float, float][float, float], None
+]:
      return value
  ```
  

@@ -72,6 +72,27 @@
       left: ${( (selected_min - minimum) / (maximum - minimum)) * 100}%;
       width: ${ ((selected_max - selected_min) / (maximum - minimum)) * 100}%;
     `;
+
+    let initial_value = value;
+
+    let range_input;
+
+
+    // function set_slider_range(): void {
+    //   const range = range_input;
+    //   const min = Number(range.min) || 0;
+    //   const max = Number(range.max) || 100;
+    //   const val = Number(range.value) || 0;
+    //   const percentage = ((val - min) / (max - min)) * 100;
+    //   range.style.setProperty("--range_progress", `${percentage}%`);
+	  // }
+
+    function reset_value(): void {
+      [selected_min, selected_max] = initial_value;
+      // set_slider_range();
+      gradio.dispatch("change");
+      gradio.dispatch("release", value);
+	}
 </script>
 
 <Block {visible} {elem_id} {elem_classes} {container} {scale} {min_width}>
@@ -85,18 +106,7 @@
     <div class="wrap">
 		<div class="head">
 			<BlockTitle {show_label} {info}>{label}</BlockTitle>
-			<div class="numbers">
-			  <input
-				  aria-label={`max input for ${label}`}
-				  data-testid="max-input"
-				  type="number"
-				  bind:value={selected_max}
-				  min={minimum}
-				  max={maximum}
-				  disabled={!interactive}
-          on:pointerup={handle_release}
-          on:blur={handle_release}
-			  />
+			<div class="tab-like-container">
 			  <input
           aria-label={`min input for ${label}`}
           data-testid="min-input"
@@ -108,15 +118,40 @@
           on:pointerup={handle_release}
           on:blur={handle_release}
 			  />
+        <input
+          aria-label={`max input for ${label}`}
+          data-testid="max-input"
+          type="number"
+          bind:value={selected_max}
+          min={minimum}
+          max={maximum}
+          disabled={!interactive}
+          on:pointerup={handle_release}
+          on:blur={handle_release}
+      />
+        <button
+          class="reset-button"
+          on:click={reset_value}
+          disabled={!interactive}
+          aria-label="Reset to default value"
+        >
+        ↺
+      </button>
 			</div>
 		</div>
 	  </div>
-	  <div class="range-slider">
-      <div class="range-bg"></div>
-      <div class="range-line" style={rangeLine} class:disabled={!interactive}></div>
-      <input type="range" disabled={!interactive} min={minimum} max={maximum} {step} bind:value={selected_min} on:input={handle_min_change} on:pointerup={handle_release} />
-      <input type="range" disabled={!interactive} min={minimum} max={maximum} {step} bind:value={selected_max} on:input={handle_max_change} on:pointerup={handle_release} />
-	  </div>
+    <div class="slider_input_container">
+      <span class="min_value">{minimum}</span>
+      <div class="range-slider">
+        <div class="range-bg"></div>
+        <div class="range-line" style={rangeLine} class:disabled={!interactive} bind:this={range_input}></div>
+        <input type="range" disabled={!interactive} min={minimum} max={maximum} {step} bind:value={selected_min} on:input={handle_min_change} on:pointerup={handle_release} />
+        <input type="range" disabled={!interactive} min={minimum} max={maximum} {step} bind:value={selected_max} on:input={handle_max_change} on:pointerup={handle_release} />
+      </div>
+      <span class="max_value">{maximum}</span>
+    </div>
+
+
 </Block>
 
  <style>
@@ -127,88 +162,122 @@
 	  }
     
     .head {
+      margin-bottom: var(--size-2);
       display: flex;
       justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
     }
 
-    .numbers {
-	  	display: flex;
-      flex-direction: row-reverse;
-      max-width: var(--size-6);
-	  }
+    .tab-like-container {
+      display: flex;
+      align-items: stretch;
+      border: 1px solid var(--input-border-color);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      height: var(--size-6);
+	}
+
+  .slider_input_container {
+		display: flex;
+		align-items: center;
+		gap: var(--size-2);
+	}
+
+    @media (max-width: 420px) {
+      .head .tab-like-container {
+        margin-bottom: var(--size-4);
+      }
+    }
 
     input[type="number"] {
-        display: block;
-        position: relative;
-        outline: none !important;
-        box-shadow: var(--input-shadow);
-        border: var(--input-border-width) solid var(--input-border-color);
-        border-radius: var(--input-radius);
-        background: var(--input-background-fill);
-        padding: var(--size-2) var(--size-2);
-        height: var(--size-6);
-        color: var(--body-text-color);
-        font-size: var(--input-text-size);
-        line-height: var(--line-sm);
-        text-align: center;
+      border: none;
+      border-radius: 0;
+      padding: var(--size-1) var(--size-2);
+      height: 100%;
+      min-width: var(--size-14);
+      font-size: var(--text-sm);
+      color: var(--body-text-color);
+      background: var(--input-background-fill);
+	}
+
+	input[type="number"]:focus {
+		box-shadow: none;
+		border-width: 2px;
 	}
 
     .range-slider {
       position: relative;
       width: 100%;
-      height: 30px;
+      margin-bottom: 10px;
     }
   
     .range-slider input[type="range"] {
       position: absolute;
       left: 0;
-      bottom: 0;
       width: 100%;
       appearance: none;
       outline: none;
       background: transparent;
       pointer-events: none;
     }
-  
     .range-slider input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
       appearance: none;
-      width: 20px;
-      height: 20px;
-      background: white;
+      height: var(--size-4);
+      width: var(--size-4);
+      background-color: white;
       border-radius: 50%;
-      border: solid 0.5px #ddd;
+      margin-top: -5px;
+      box-shadow:
+			  0 0 0 1px rgba(247, 246, 246, 0.739),
+			  1px 1px 4px rgba(0, 0, 0, 0.1);
       pointer-events: auto;
       cursor: pointer;
     }
     /* Uncomment to make slider look the same on firefox */
     .range-slider input[type="range"]::-moz-range-thumb {
-      /* width: 20px;
-      height: 20px;
-      background: white;
+      height: var(--size-4);
+      width: var(--size-4);
+      background-color: white;
       border-radius: 50%;
-      border: solid 0.5px #ddd; */
+      border: none;
+      box-shadow:
+        0 0 0 1px rgba(247, 246, 246, 0.739),
+        1px 1px 4px rgba(0, 0, 0, 0.1);
       pointer-events: auto;
       cursor: pointer;
+    }
+
+    .range-slider input[type="range"]::-moz-range-track {
+      border-radius: var(--radius-xl);
+      bottom: 0;
+	  }
+
+    .min_value,
+    .max_value {
+      font-size: var(--text-sm);
+      color: var(--body-text-color-subdued);
     }
   
     .range-line {
       position: absolute;
       left: 0;
-      bottom: 8px;
-      height: 4px;
       background: var(--slider-color);
       pointer-events: none;
+      height: var(--size-2);
+		  border-radius: var(--radius-xl);
     }
 
     .range-bg {
       position: absolute;
       left: 0;
       width: 100%;
-      bottom: 8px;
-      height: 4px;
+      height: var(--size-2);
       z-index: 0;
       background: var(--neutral-200);
       pointer-events: none;
+      border-radius: var(--radius-xl);
     }
 
     .disabled {
@@ -225,6 +294,30 @@
     }
 
     input[type="number"][disabled] {
+      cursor: not-allowed;
+    }
+
+    .reset-button {
+		  display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      border-left: 1px solid var(--input-border-color);
+      cursor: pointer;
+      font-size: var(--text-sm);
+      color: var(--body-text-color);
+      padding: 0 var(--size-2);
+      min-width: var(--size-6);
+      transition: background-color 0.15s ease-in-out;
+	}
+
+    .reset-button:hover:not(:disabled) {
+      background-color: var(--background-fill-secondary);
+    }
+
+    .reset-button:disabled {
+      opacity: 0.5;
       cursor: not-allowed;
     }
 </style>
